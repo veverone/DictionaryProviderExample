@@ -21,6 +21,11 @@ import android.os.Bundle;
 import android.provider.UserDictionary;
 import android.provider.UserDictionary.Words;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.internal.widget.ListViewCompat;
+import android.util.Log;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 /**
@@ -34,13 +39,18 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Get the TextView which will be populated with the Dictionary ContentProvider data.
-        TextView dictTextView = (TextView) findViewById(R.id.dictionary_text_view);
-
         // Get the ContentResolver which will send a message to the ContentProvider
         ContentResolver resolver = getContentResolver();
-
         // Get a Cursor containing all of the rows in the Words table
         Cursor cursor = resolver.query(UserDictionary.Words.CONTENT_URI, null, null, null, null);
+
+        // Get the TextView which will be populated with the Dictionary ContentProvider data.
+        ListView dictListView = (ListView) findViewById(R.id.dictionary_list_view);
+
+        String[] from = new String[]{Words.WORD, Words.FREQUENCY};
+        int[] to = new int[]{R.id.text1, R.id.text2};
+        ListAdapter listAdapter = new SimpleCursorAdapter(this, R.layout.two_line_list_item, cursor, from, to);
+
+        dictListView.setAdapter(listAdapter);
     }
 }
